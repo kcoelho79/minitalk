@@ -6,7 +6,7 @@
 /*   By: kde-oliv <kde-oliv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 19:31:15 by kde-oliv          #+#    #+#             */
-/*   Updated: 2021/09/15 11:49:16 by kde-oliv         ###   ########.fr       */
+/*   Updated: 2021/09/15 18:25:09 by kde-oliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ int	main(int argc, char **argv)
 	int					pid;
 
 	if (argc != 3 || !ft_strlen(argv[2]))
-		return (-1);
+	{
+		ft_putstr_fd("input error missing args \n", 1);
+		exit(EXIT_FAILURE);
+	}
 	pid = ft_atoi(argv[1]);
 	ft_putstr_fd("Sent    : ", 1);
 	ft_putnbr_fd(ft_strlen(argv[2]), 1);

@@ -1,7 +1,7 @@
 # minitalk
 Programa simples em C  para Comunicação entre servidor e cliente, usando UNIX signals.
 
-Introdução sobre signals
+# Introdução sobre signals
 http://www.cs.kent.edu/~ruttan/sysprog/lectures/signals.html
 
 Signal"São notificações enviadas para o processo, que notifica de algum evento importante, o processo para imediatamente o que esta fazendo, para tratar a notificação. 
@@ -25,10 +25,31 @@ signation
 https://man7.org/linux/man-pages/man2/sigaction.2.html
 
 
+# sobre a logica
+## Cliente 
+recebe string por linha de comando,
+roda a funcao serialize, que pega cada cacarter da string, e envia 8bits de cada cacarter via sinal,  SIGUSR1 bit1, e SIGUSR2 bit 0.
+que por sua vez, receber um sinal de volta de confirmação, que chama a funcão sucess, onde
+SIGUSR1 representa transmitindo bit e vai armazenado na variavel RECEIVED e o USRSIG2 informa que terminou o envio, então exit(0) o cliente.
+
+## Servidor,
+ cada sinal recebido é chamado a funcao deserialize, que recebe os sinais e enfileira os bits até somar 8bits e imprimi o caracter.
+
+
 Codigo Server.c
 
 s_sig.sa_sigaction = ft_handler; # Especifica a funcao que sera chamada ao receber o sinal
 s_sig.sa_flags = SA_SIGINFO;     # passa uma estrutura de dados como info sobre o sinal
 sigaction(SIGUSR1, &s_sig, 0);   # muda o sinal (SIGUSR1) para receber a funçao acima
 
+codigo esta documentado
 
+Rodar aplicação
+===============
+
+* make compilar aplicaçao 
+./server sem argumento, servidor informara o PID
+./client [PID_SERVIDOR] [MENSAGEM]
+
+para simplificar
+./client $(pgrep -x server) "$(cat ./test.txt)"

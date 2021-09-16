@@ -6,7 +6,7 @@
 /*   By: kde-oliv <kde-oliv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 19:31:15 by kde-oliv          #+#    #+#             */
-/*   Updated: 2021/09/16 11:25:08 by kde-oliv         ###   ########.fr       */
+/*   Updated: 2021/09/16 19:10:07 by kde-oliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,14 @@ static void	serialize(int pid, char *str)
 				send_signal(pid, 1);
 			else
 				send_signal(pid, 0);
-			usleep(50);
+			usleep(100);
 		}
 	}
 	bit = 8;
 	while (bit--)
 	{
+		usleep(100);
 		send_signal(pid, 0);
-		usleep(50);
 	}
 }
 
@@ -94,5 +94,6 @@ int	main(int argc, char **argv)
 	serialize(pid, argv[2]);
 	while (1)
 		pause();
+		// pausa até receber um sinal
 	return (0);
 }

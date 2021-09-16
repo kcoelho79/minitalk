@@ -6,7 +6,7 @@
 /*   By: kde-oliv <kde-oliv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 18:13:35 by kde-oliv          #+#    #+#             */
-/*   Updated: 2021/09/15 15:27:12 by kde-oliv         ###   ########.fr       */
+/*   Updated: 2021/09/16 19:09:44 by kde-oliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,12 @@ static void	deserialize(int sig, siginfo_t *siginfo, void *context)
 	static pid_t			client_pid = 0;
 	static unsigned char	c = 0;
 
-	(void)context;
+ 	(void)context;
 	if (!client_pid)
 		client_pid = siginfo->si_pid;
+	// concatena a aplica operador logico or
+	// 1 0 = 1
+	// 1 1 = 1 
 	c |= (sig == SIGUSR2);
 	if (++i == 8)
 	{
@@ -30,14 +33,17 @@ static void	deserialize(int sig, siginfo_t *siginfo, void *context)
 		if (!c)
 		{
 			kill(client_pid, SIGUSR2);
+			// envia sinal para o cliente, fim
 			client_pid = 0;
 			return ;
 		}
 		ft_putchar_fd(c, 1);
 		c = 0;
+		// envia sinal cliente, completou caracter
 		kill(client_pid, SIGUSR1);
 	}
 	else
+	// movimenta o bit para esquerda e acrescentado zero
 		c <<= 1;
 }
 

@@ -6,7 +6,7 @@
 /*   By: kde-oliv <kde-oliv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 19:31:15 by kde-oliv          #+#    #+#             */
-/*   Updated: 2021/09/15 18:25:09 by kde-oliv         ###   ########.fr       */
+/*   Updated: 2021/09/16 11:25:08 by kde-oliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,34 @@
 #include <unistd.h>
 #include "libft/libft.h"
 
-static void	ft_sigaction(int sig)
+static void	success(int sig)
 {
 	static int	received = 0;
 
 	if (sig == SIGUSR1)
+	{
 		++received;
+	}
 	else
 	{
 		ft_putnbr_fd(received, 1);
 		ft_putchar_fd('\n', 1);
 		exit(0);
+	}
+}
+
+static void	send_signal(int pid, int sig)
+{
+	int		signal;
+
+	if (sig == 1)
+		signal = SIGUSR2;
+	if (sig == 0)
+		signal = SIGUSR1;
+	if (kill(pid, signal))
+	{
+		ft_putstr_fd("Error, Do you start Server or PID is correct  ?", 1);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -41,17 +58,17 @@ static void	serialize(int pid, char *str)
 		while (bit--)
 		{
 			if (c >> bit & 1)
-				kill(pid, SIGUSR2);
+				send_signal(pid, 1);
 			else
-				kill(pid, SIGUSR1);
-			usleep(100);
+				send_signal(pid, 0);
+			usleep(50);
 		}
 	}
 	bit = 8;
 	while (bit--)
 	{
-		kill(pid, SIGUSR1);
-		usleep(100);
+		send_signal(pid, 0);
+		usleep(50);
 	}
 }
 
@@ -70,7 +87,7 @@ int	main(int argc, char **argv)
 	ft_putnbr_fd(ft_strlen(argv[2]), 1);
 	ft_putchar_fd('\n', 1);
 	ft_putstr_fd("Received: ", 1);
-	s_sigaction.sa_handler = ft_sigaction;
+	s_sigaction.sa_handler = success;
 	s_sigaction.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &s_sigaction, 0);
 	sigaction(SIGUSR2, &s_sigaction, 0);
